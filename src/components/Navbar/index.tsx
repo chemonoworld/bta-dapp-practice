@@ -17,20 +17,20 @@ const Navbar = () => {
           <div className="navbar-content navbar-collapsed">
             <div className="navbar-link-container">
               <a
-                href="/"
+                href="https://github.com/codestates/BTAdAppProject-03"
                 className="navbar-link"
               >
                 Extension
               </a>
             </div>
             <div className="navbar-link-container">
-              <a href="/" className="navbar-link">
+              <a href="https://www.notion.so/codestates/3-3d89ccf974db4ebb9ca8ab832972fdfd" className="navbar-link">
                 About us
               </a>
             </div>
             <div className="navbar-icons-box">
               <a
-                href="https://github.com/0xSBT/Contracts"
+                href="https://github.com/codestates/BTAdAppProject-03"
                 className="navbar-icon-container navbar-github"
                 target="_blank"
               >
@@ -41,7 +41,7 @@ const Navbar = () => {
                 />
               </a>
               <a
-                href="/"
+                href="https://github.com/codestates"
                 className="navbar-icon-container navbar-discord"
                 target="_blank"
               >
