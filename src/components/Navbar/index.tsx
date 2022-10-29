@@ -4,6 +4,7 @@ import DISCORD from '../../assets/images/discord-white.png';
 import GITHUB from '../../assets/images/github-white.png';
 import WALLET from '../../assets/images/wallet-large.png';
 import { Link } from 'react-router-dom';
+import WalletBtn from '../WalletBtn';
 // import NavbarWalletBtn from '../NavbarWalletBtn';
 
 const Navbar = () => {
@@ -53,12 +54,7 @@ const Navbar = () => {
               </a>
             </div>
           </div>
-          {/* <div className="navbar-btn-container navbar-btn-collapsed">
-            <NavbarWalletBtn isSmallIcon={false} />
-          </div>
-          <div className="navbar-btn-container navbar-btn-icon-hidden">
-            <NavbarWalletBtn isSmallIcon={true} />
-          </div> */}
+          <WalletBtn/>
         </div>
       </div>
     </div>
