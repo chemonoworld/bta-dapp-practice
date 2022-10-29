@@ -10,10 +10,6 @@ const MainPage = () => {
     return(
         <div className="root-container">
             <div className="main-expl-body">
-                <div className="img-container">
-                    {/* <img src={Bithumb} className="main-logo" alt="bithumb" /> */}
-                    {/* <img src={CS} className="main-logo" alt="codestates" /> */}
-                </div>
                 <div>
                     빗썸 아카데미 NFT를 민팅하고 트위터 아이디와 연결하여
                 </div>
