@@ -21,13 +21,13 @@ const WalletBtn = () => {
 
     return (
         <Button className="connect-wallet-btn" onClick={handleClick}>
-            {!isConnected ? (<div className="txt-box txt-default-size">
+            {!isConnected ? (<div className="font-unbounded">
                 Connect Wallet
-            </div>) : (<div className="txt-box txt-white txt-default-size">
+            </div>) : (<span className="txt-white font-unbounded">
                 {address !== null
-                    ? "Connected Now"
+                    ? `${address.slice(0, 6)} ... ${address.slice(-4)}`
                     : 'Connecting...'}
-            </div>)
+            </span>)
             }
         </Button>
     )
