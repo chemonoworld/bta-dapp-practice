@@ -5,7 +5,7 @@ import CLOSE from '../../assets/images/close-icon.png';
 import BITHUMB from '../../assets/images/bithumb-128.png';
 import { useRecoilValue } from 'recoil';
 import { addressState } from '../../states/accountState';
-import { mintToken } from '../../modules/useAptos';
+import { hasToken, mintToken } from '../../modules/useAptos';
 
 export const Modal = () => {
   const [twitterId, setTwitterId] = useState('');
@@ -87,5 +87,4 @@ export const Modal = () => {
 export const openModal = () => {
     const modalContainer = document.querySelector('.modal-container');
     modalContainer?.classList.remove('hidden');
-    console.log('open modal');
   };

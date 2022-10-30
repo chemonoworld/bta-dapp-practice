@@ -4,20 +4,19 @@ const TESTNET_NODE_URL = 'https://fullnode.testnet.aptoslabs.com';
 const COLLECTION_NAME = "BTA_03_Badge";
 const TOKEN_DECRIPTION = "빗썸 테크 아카데미 3기 수료 뱃지 NFT입니다. 토큰 이름은 자신이 민팅시 제출했던 트위터 아이디와 같습니다.";
 const TOKEN_URI = "https://d22p4hblaqdu3x.cloudfront.net/BTA-03-TAG/bithumb.png";
+const CREATOR_ADDR = "0x10656bc042639da94238e21f0ba00779d103ee7150a316f1c82b3319b1db6824";
 
 export const hasToken = async (twitterId:string): Promise<boolean> => {
     const client = new AptosClient(TESTNET_NODE_URL);
-    const creatorHex = "0x10656bc042639da94238e21f0ba00779d103ee7150a316f1c82b3319b1db6824"
     const collection: { type: Types.MoveStructTag; data: any } = await client.getAccountResource(
-      creatorHex,
+      CREATOR_ADDR,
       "0x3::token::Collections",
     );
     const { handle } = collection.data.token_data;
-    const collectionName = "BTA_03_" + twitterId;
     const tokenName = twitterId;
     const tokenDataId = {
-      creator: creatorHex,
-      collection: collectionName,
+      creator: CREATOR_ADDR,
+      collection: COLLECTION_NAME,
       name: tokenName,
     };
 
@@ -27,13 +26,21 @@ export const hasToken = async (twitterId:string): Promise<boolean> => {
       key: tokenDataId,
     };
 
-    const result = await client.getTableItem(handle, getTokenTableItemRequest);
-    if (result) return true;
+    try {
+        const result = await client.getTableItem(handle, getTokenTableItemRequest);
+        if (result) return true;
+    } catch(e) {
+        console.log(e);
+        return false;
+    }
     return false;
 }
 
-const getCreatorAccount = (): AptosAccount => {
-    const privateKey = "b8b0e6798967e8db9ef89c3e9074d1f371f3988640ab8511740860f393c0e5ce";
+const getCreatorAccount = (): AptosAccount | null => {
+    const privateKey = process.env.REACT_APP_CREATOR_PRIVATE_KEY;
+    if (!privateKey) {
+        return null;
+    }
     const hexString = new HexString(privateKey);
     return new AptosAccount(hexString.toUint8Array());
 }
@@ -42,6 +49,7 @@ export const mintToken = async (toAddr: string, twitterId: string) => {
     const client = new AptosClient(TESTNET_NODE_URL);
     const tokenClient = new TokenClient(client);
     const creatorAccount = getCreatorAccount();
+    if(!creatorAccount) return;
     const tokenName = twitterId;
     const supply = 1;
     const createTxHash = await tokenClient.createToken(
@@ -67,7 +75,7 @@ export const mintToken = async (toAddr: string, twitterId: string) => {
     )
     const offerTxResult = await client.waitForTransactionWithResult(offerTxHash);
     console.log(offerTxResult);
-    alert("토큰 생성자로부터 offer가 들어왔습니다. 클레임 준비해주세요. tx hash: " + offerTxHash);
+    alert("토큰 생성자로부터 offer가 들어왔습니다. 클레임해주세요. tx hash: " + offerTxHash);
 
     const claimTx = {
         type: "entry_function_payload",
