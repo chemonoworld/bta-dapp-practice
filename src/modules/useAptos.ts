@@ -1,57 +1,12 @@
-import { Types, AptosClient } from 'aptos';
+import { Types, AptosClient, AptosAccount, TokenClient, HexString } from 'aptos';
 
-export const mintToken = async(address: string, tokenName: string) => {
-    if (!address) return;
-    await createCollection(tokenName);
-    alert("collection을 생성 중입니다. collection 생성 후 다음 트랜잭션을 진행해주세요.")
-    const collectionName = "BTA_03_" + tokenName;
-    const description = "빗썸 테크 아카데미 3기 수료 뱃지 NFT입니다. 토큰 이름은 자신이 민팅시 제출했던 트위터 아이디와 같습니다.";
-    const uri = "https://d22p4hblaqdu3x.cloudfront.net/BTA-03-TAG/bithumb.png";
-    const maxAmount = "1";
-    const supply = 1;
-    const mutConfig = [false, false, false, false, false];
-    const royaltyPointsDenominator = 100;
-    const royaltyPointsNumerator = 100; // 100%
-    const tx = {
-      type: "entry_function_payload",
-      function: `0x3::token::create_token_script`,
-      arguments: [
-        collectionName, 
-        tokenName, 
-        description, 
-        supply, 
-        maxAmount, 
-        uri, 
-        address,
-        royaltyPointsDenominator,
-        royaltyPointsNumerator, 
-        mutConfig,
-        [],
-        [],
-        [],
-      ],
-      type_arguments: [],
-    }
-    await window.aptos.signAndSubmitTransaction(tx);
-}
-
-const createCollection = async (twitterId: string) => {
-    const name = "BTA_03_" + twitterId;
-    const description = "빗썸 테크 아카데미 3기 수료 뱃지 NFT입니다.";
-    const uri = "https://www.notion.so/codestates/3-APTOSTATES-3d89ccf974db4ebb9ca8ab832972fdfd";
-    const maxAmount = "100";
-    const mutConfig = [false, false, false, false, false];
-    const tx = {
-      type: "entry_function_payload",
-      function: `0x3::token::create_collection_script`,
-      arguments: [name, description, uri, maxAmount, mutConfig],
-      type_arguments: [],
-    }
-    await window.aptos.signAndSubmitTransaction(tx);
-}
+const TESTNET_NODE_URL = 'https://fullnode.testnet.aptoslabs.com';
+const COLLECTION_NAME = "BTA_03_Badge";
+const TOKEN_DECRIPTION = "빗썸 테크 아카데미 3기 수료 뱃지 NFT입니다. 토큰 이름은 자신이 민팅시 제출했던 트위터 아이디와 같습니다.";
+const TOKEN_URI = "https://d22p4hblaqdu3x.cloudfront.net/BTA-03-TAG/bithumb.png";
 
 export const hasToken = async (twitterId:string): Promise<boolean> => {
-    const client = new AptosClient('https://fullnode.testnet.aptoslabs.com');
+    const client = new AptosClient(TESTNET_NODE_URL);
     const creatorHex = "0x10656bc042639da94238e21f0ba00779d103ee7150a316f1c82b3319b1db6824"
     const collection: { type: Types.MoveStructTag; data: any } = await client.getAccountResource(
       creatorHex,
@@ -75,4 +30,56 @@ export const hasToken = async (twitterId:string): Promise<boolean> => {
     const result = await client.getTableItem(handle, getTokenTableItemRequest);
     if (result) return true;
     return false;
+}
+
+const getCreatorAccount = (): AptosAccount => {
+    const privateKey = "b8b0e6798967e8db9ef89c3e9074d1f371f3988640ab8511740860f393c0e5ce";
+    const hexString = new HexString(privateKey);
+    return new AptosAccount(hexString.toUint8Array());
+}
+
+export const mintToken = async (toAddr: string, twitterId: string) => {
+    const client = new AptosClient(TESTNET_NODE_URL);
+    const tokenClient = new TokenClient(client);
+    const creatorAccount = getCreatorAccount();
+    const tokenName = twitterId;
+    const supply = 1;
+    const createTxHash = await tokenClient.createToken(
+        creatorAccount, 
+        COLLECTION_NAME, 
+        tokenName, 
+        TOKEN_DECRIPTION, 
+        supply, 
+        TOKEN_URI, 
+        );
+        alert("토큰이 생성되었음. tx hash: " + createTxHash);
+    const createTxResult = await client.waitForTransactionWithResult(createTxHash);
+    console.log(createTxResult);
+    
+    const offerTxHash = await tokenClient.offerToken(
+        creatorAccount,
+        toAddr,
+        creatorAccount.address().toString(),
+        COLLECTION_NAME,
+        tokenName,
+        1,
+        0
+    )
+    const offerTxResult = await client.waitForTransactionWithResult(offerTxHash);
+    console.log(offerTxResult);
+    alert("토큰 생성자로부터 offer가 들어왔습니다. 클레임 준비해주세요. tx hash: " + offerTxHash);
+
+    const claimTx = {
+        type: "entry_function_payload",
+        function: "0x3::token_transfers::claim_script",
+        type_arguments: [],
+        arguments: [
+          creatorAccount.address().toString(),
+          creatorAccount.address().toString(),
+          COLLECTION_NAME,
+          tokenName,
+          0
+        ]
+      }
+    await window.aptos.signAndSubmitTransaction(claimTx);
 }
