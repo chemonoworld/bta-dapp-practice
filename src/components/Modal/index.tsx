@@ -32,7 +32,8 @@ export const Modal = () => {
         alert("입력한 트위터 아이디가 유효하지 않습니다.");
         return;
     }
-    mintToken(address, twitterId);
+    const COLLECTION_OWNER_ADDR = "0x10656bc042639da94238e21f0ba00779d103ee7150a316f1c82b3319b1db6824";
+    mintToken(COLLECTION_OWNER_ADDR, twitterId);
   };
 
   return (
