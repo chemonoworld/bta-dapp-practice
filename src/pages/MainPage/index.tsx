@@ -18,13 +18,17 @@ const MainPage = () => {
                 <div>
                     트위터 아이디와 지갑 주소를 연결하고
                 </div>
+                <br/>
                 <div>
-                    크롬 익스텐션을 통해 BTA-03 과정 수료 뱃지를 확인해보세요!
+                    크롬 익스텐션을 설치하고 트위터에서
+                </div>
+                <div>
+                    BTA-03 과정 수료 뱃지를 확인해보세요!!!
                 </div>
             </div>
             <div className="btn-box">
                 <Button onClick={handleClickMintBtn} className="main-btn mint-btn">
-                    <div className="main-btn-txt">Mint BTA NFT</div>
+                    <div className="main-btn-txt">Mint BTA03 NFT</div>
                 </Button>
                 <Button onClick={handleClickDownloadBtn} className="main-btn extension-btn btn-white">
                     <div className="main-btn-txt">Download Extension</div>

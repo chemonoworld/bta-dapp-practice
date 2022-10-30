@@ -3,9 +3,13 @@ import Button from '../Button';
 import './modal.scss';
 import CLOSE from '../../assets/images/close-icon.png';
 import BITHUMB from '../../assets/images/bithumb-128.png';
+import { useRecoilValue } from 'recoil';
+import { addressState } from '../../states/accountState';
+import { mintToken } from '../../modules/useAptos';
 
 export const Modal = () => {
   const [twitterId, setTwitterId] = useState('');
+  const address = useRecoilValue(addressState);
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {
       target: { value },
@@ -20,7 +24,15 @@ export const Modal = () => {
   };
 
   const handleClickBtn = () => {
-    alert("mint!");
+    if (!address || address == "") {
+        alert("지갑에 연결된 계정이 유효하지 않습니다.");
+        return;
+    }
+    if (!twitterId || twitterId == "") {
+        alert("입력한 트위터 아이디가 유효하지 않습니다.");
+        return;
+    }
+    mintToken(address, twitterId);
   };
 
   return (
@@ -40,7 +52,7 @@ export const Modal = () => {
             수료 뱃지는 Aptos 체인에서NFT로 발행됩니다.
           </div>
           <div className="modal-txt-box">
-            아래에 자신의 트위터 아이디(@_____)를 입력하고 NFT Badge를 민팅해보세요.
+            아래에 자신의 트위터 아이디 @(_____) 를 입력하고 NFT Badge를 민팅해보세요.
           </div>
         </div>
         <div className="modal-input-container">
