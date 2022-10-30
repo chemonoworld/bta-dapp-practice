@@ -11,13 +11,13 @@ const MainPage = () => {
         <div className="root-container">
             <div className="main-expl-body">
                 <div>
-                    빗썸 아카데미 3기 NFT를 민팅하여
+                    빗썸 테크 아카데미 3기 NFT를 민팅하여
                 </div>
                 <div>
                     트위터 아이디와 지갑 주소를 연결하고
                 </div>
                 <div>
-                    크롬 익스텐션을 통해 BTA 과정 수료 뱃지를 확인해보세요!
+                    크롬 익스텐션을 통해 BTA-03 과정 수료 뱃지를 확인해보세요!
                 </div>
             </div>
             
